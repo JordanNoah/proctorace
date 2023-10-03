@@ -17,8 +17,8 @@ export class SequelizeUser extends Model<UserRow,Omit<UserRow,'id'>>{
     declare institutionId: number
     declare userName: string;
     declare fullName: string;
-    declare readonly createdAt?: Date
-    declare readonly updatedAt?: Date
+    declare readonly createdAt: Date
+    declare readonly updatedAt: Date
 }
 
 SequelizeUser.init({
