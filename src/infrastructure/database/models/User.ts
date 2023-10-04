@@ -37,7 +37,11 @@ SequelizeUser.init({
     },
     userName:{
         type:DataTypes.STRING,
-        allowNull:false
+        allowNull:false,
+        references:{
+            model: '',
+            key: 'id'
+        }
     },
     fullName:{
         type:DataTypes.STRING,
