@@ -1,33 +1,51 @@
 import { CustomError, UserDatasource, UserEntity, RegisterUserDto } from '../../domain'
+import { InstitutionDatasourceImpl } from './instutution.datasource.impl'
 import { SequelizeUser } from "../database/models/User"
 
 export class UserDatasourceImpl implements UserDatasource {
     async register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
         try {
-            const {id,auth,confirmed,policyagreed,deleted,suspended,mnethostid,username,password,idnumber,firstname,lastname,email,emailstop,phone1,phone2,institution,department,address,city,country,lang,calendartype,theme,timezone,firstaccess,lastaccess,lastlogin,currentlogin,lastip,secret,picture,description,descriptionformat,mailformat,maildigest,maildisplay,autosubscribe,trackforums,timecreated,timemodified,trustbitmask,imagealt,lastnamephonetic,firstnamephonetic,middlename,alternatename,moodlenetprofile} = registerUserDto
+            const {institution,user} = registerUserDto
 
-            var [user,created] = await SequelizeUser.findOrCreate({
+            var institutionDb = await new InstitutionDatasourceImpl().getByShortnameAndModality(institution)
+            
+            if (!institutionDb) throw CustomError.notFound('Institution not found')
+            
+            var [userDb,created] = await SequelizeUser.findOrCreate({
                 where:{
-                    externalId:id,
-                    institutionId:institution
+                    externalId:user.id,
+                    institutionId:institutionDb.id
                 },
                 defaults:{
-                    externalId:id,
-                    institutionId:3,
-                    userName:username,
-                    fullName:`${firstname} ${lastname}`
+                    externalId:user.id,
+                    institutionId:institutionDb.id,
+                    userName:user.username,
+                    fullName:`${user.firstname} ${user.lastname}`
                 }
             })
             return new UserEntity(
-                user.id,
-                user.externalId,
-                user.institutionId,
-                user.userName,
-                user.fullName,
-                user.createdAt,
-                user.updatedAt
+                userDb.id,
+                userDb.externalId,
+                userDb.institutionId,
+                userDb.userName,
+                userDb.fullName,
+                userDb.createdAt,
+                userDb.updatedAt
             );
         } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
+
+    async getAll(): Promise<UserEntity[]> {
+        try {
+            return await SequelizeUser.findAll({include:'institutions'})
+        } catch (error) {
+            console.log(error);
+            
             if (error instanceof CustomError) {
                 throw error;
             }

@@ -15,4 +15,12 @@ export class UserController {
             res.status(500).json(error)
         })
     }
+
+    getAllUsers = (req: Request, res: Response) => {
+        this.userRepository.getAll().then((users)=>{
+            res.json(users)
+        }).catch((error)=> {
+            res.status(500).json(error)
+        })
+    }
 }

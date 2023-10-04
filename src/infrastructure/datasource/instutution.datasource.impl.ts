@@ -1,4 +1,5 @@
 import { CustomError, InstitutionDatasource, InstitutionEntity, RegisterInstitutionDto } from "../../domain";
+import { IncomeExternalInstitutionDto } from "../../domain/dtos/institutions/incomeExternal-institution.dto";
 import { SequelizeInstitution } from "../database/models/Institution";
 
 export class InstitutionDatasourceImpl implements InstitutionDatasource {   
@@ -127,6 +128,21 @@ export class InstitutionDatasourceImpl implements InstitutionDatasource {
                 institution.updatedAt
             )
         } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
+    async getByShortnameAndModality(incomeExternalInstitutionDto: IncomeExternalInstitutionDto): Promise<InstitutionEntity | null> {
+        try{
+            return await SequelizeInstitution.findOne({
+                where:{
+                    abbreviation:incomeExternalInstitutionDto.institution_abbreviation,
+                    modality:incomeExternalInstitutionDto.modality
+                }
+            })
+        } catch(error) {
             if (error instanceof CustomError) {
                 throw error;
             }

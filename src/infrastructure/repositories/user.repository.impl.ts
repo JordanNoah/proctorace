@@ -8,4 +8,8 @@ export class UserRepositoryImpl implements UserRepository {
     register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
         return this.userDatasource.register(registerUserDto)
     }
+
+    getAll(): Promise<UserEntity[]> {
+        return this.userDatasource.getAll()
+    }
 }

@@ -10,6 +10,7 @@ export class UserRoutes {
         const userRepository = new UserRepositoryImpl(datasource)
 
         const controller = new UserController(userRepository)
+        router.get('/', controller.getAllUsers)
         router.post('/save', controller.createUser)
         return router;
     }
