@@ -32,6 +32,10 @@ export class Server {
         await SequelizeCourse.sync({force:true})
         await SequelizeModule.sync({force:true})
         await SequelizeEnrollment.sync({force:true})
+        SequelizeUser.belongsTo(SequelizeInstitution,{
+            foreignKey:'id',
+            as:"institution"
+        })
         this.app.listen(this.port,() => {
             console.log(`Server running on PORT ${this.port}`);
         })    

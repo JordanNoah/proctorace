@@ -12,6 +12,9 @@ export class UserRoutes {
         const controller = new UserController(userRepository)
         router.get('/', controller.getAllUsers)
         router.post('/save', controller.createUser)
+        router.get('/:id', controller.getById)
+        router.delete('/:id',controller.deleteById)
+        router.put('/',controller.updateUser)
         return router;
     }
 }
