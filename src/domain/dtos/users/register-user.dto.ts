@@ -12,6 +12,8 @@ export class RegisterUserDto {
             institution,
             user
         } = object
+        
+        if (!user) return ['Missing user structure']
 
         if(!user.id) return ['Missing external id']
         if(!user.username) return ['Missing username']

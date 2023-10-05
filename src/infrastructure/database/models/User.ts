@@ -1,5 +1,6 @@
 import { DataTypes, Model } from 'sequelize'
 import { sequelize } from '../sequelize'
+import { SequelizeInstitution } from './Institution'
 
 interface UserRow {
     id: number,
@@ -33,15 +34,15 @@ SequelizeUser.init({
     },
     institutionId:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        allowNull:false,
+        references:{
+            model: SequelizeInstitution,
+            key: 'id'
+        }
     },
     userName:{
         type:DataTypes.STRING,
-        allowNull:false,
-        references:{
-            model: '',
-            key: 'id'
-        }
+        allowNull:false
     },
     fullName:{
         type:DataTypes.STRING,

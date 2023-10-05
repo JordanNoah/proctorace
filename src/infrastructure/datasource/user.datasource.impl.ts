@@ -7,6 +7,11 @@ export class UserDatasourceImpl implements UserDatasource {
         try {
             const {institution,user} = registerUserDto
 
+            console.log(institution);
+            
+
+            if(typeof institution != 'object') throw CustomError.internalSever('Missing institution structure')
+
             var institutionDb = await new InstitutionDatasourceImpl().getByShortnameAndModality(institution)
             
             if (!institutionDb) throw CustomError.notFound('Institution not found')

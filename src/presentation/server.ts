@@ -27,7 +27,7 @@ export class Server {
         this.app.use(express.json())
 
         this.app.use(this.routes)
-        await SequelizeInstitution.sync({force:true})
+        await SequelizeInstitution.sync({force:false})
         await SequelizeUser.sync({force:true})
         await SequelizeCourse.sync({force:true})
         await SequelizeModule.sync({force:true})
