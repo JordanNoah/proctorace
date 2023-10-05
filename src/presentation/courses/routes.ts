@@ -1,11 +1,16 @@
 import { Router } from "express";
 import { CoursesController } from "./controller";
+import { CourseDatasourceImpl } from "../../infrastructure/datasource/course.datasource.impl";
+import { CourseRepositoryImpl } from "../../infrastructure/repositories/course.repository.impl";
 
-export class InstitutionsRoutes {
+export class CoursesRoutes {
     static get routes(): Router {
         const router = Router()
 
-        const controller = new CoursesController()
+        const datasource = new CourseDatasourceImpl()
+        const courseRepository = new CourseRepositoryImpl(datasource)
+
+        const controller = new CoursesController(courseRepository)
         router.get('/', controller.getAllCourses)
         router.get('/:uuid', controller.getCourseByExternalId)
         router.post('/save', controller.createCourse)

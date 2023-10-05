@@ -36,6 +36,10 @@ export class Server {
             foreignKey:'id',
             as:"institution"
         })
+        SequelizeCourse.belongsTo(SequelizeInstitution,{
+            foreignKey:'id',
+            as:'institution'
+        })
         this.app.listen(this.port,() => {
             console.log(`Server running on PORT ${this.port}`);
         })    

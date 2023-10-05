@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize"
 import { sequelize } from "../sequelize"
+import { SequelizeInstitution } from "./Institution"
 
 interface CourseRow {
     id: number,
@@ -8,8 +9,8 @@ interface CourseRow {
     name: string,
     shortName: string,
     idNumber: string,
-    startDate: string,
-    endDate: string,
+    startDate: number,
+    endDate: number,
     createdAt?: Date,
     updatedAt?:Date
 }
@@ -21,10 +22,10 @@ export class SequelizeCourse extends Model<CourseRow,Omit<CourseRow,'id'>>{
     declare name: string
     declare shortName: string
     declare idNumber: string
-    declare startDate: string
-    declare endDate: string
-    declare readonly createdAt?: Date
-    declare readonly updatedAt?:Date
+    declare startDate: number
+    declare endDate: number
+    declare readonly createdAt: Date
+    declare readonly updatedAt:Date
 }
 
 SequelizeCourse.init({
@@ -39,7 +40,11 @@ SequelizeCourse.init({
     },
     institutionId:{
         type:DataTypes.INTEGER,
-        allowNull:false
+        allowNull:false,
+        references:{
+            model: SequelizeInstitution,
+            key: 'id'
+        }
     },
     name:{
         type: DataTypes.STRING,
@@ -54,11 +59,11 @@ SequelizeCourse.init({
         allowNull: true
     },
     startDate:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true
     },
     endDate:{
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true
     }
 },{
