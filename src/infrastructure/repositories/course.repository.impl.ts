@@ -7,16 +7,24 @@ export class CourseRepositoryImpl implements CourseRepository {
     constructor(
         private readonly courseDatasource: CourseDatasource
     ){}
-
+    
     register(registerCourseDto: RegisterCourseDto): Promise<CourseEntity> {
         return this.courseDatasource.register(registerCourseDto)
     }
-
+    
     getById(id: number): Promise<CourseEntity | null> {
         return this.courseDatasource.getById(id)
     }
-
+    
     getAll(): Promise<CourseEntity[]> {
         return this.courseDatasource.getAll()
+    }
+    
+    deleteById(id: number): Promise<CourseEntity> {
+        return this.courseDatasource.deleteById(id)
+    }
+    
+    update(registerCourseDto: RegisterCourseDto): Promise<CourseEntity | null> {
+        return this.courseDatasource.update(registerCourseDto)
     }
 }

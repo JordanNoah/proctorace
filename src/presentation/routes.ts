@@ -2,6 +2,7 @@ import { Router } from "express";
 import { InstitutionsRoutes } from "./institutions/routes";
 import { UserRoutes } from './users/routes'
 import { CoursesRoutes } from './courses/routes'
+import { ModuleRoutes } from "./modules/routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -10,7 +11,7 @@ export class AppRoutes {
         router.use('/api/institutions',InstitutionsRoutes.routes)
         router.use('/api/courses', CoursesRoutes.routes)
         //router.use('/api/enrollments')
-        //router.use('/api/modules')
+        router.use('/api/modules', ModuleRoutes.routes)
         //router.use('/api/sessions')
         router.use('/api/users', UserRoutes.routes)
         return router;

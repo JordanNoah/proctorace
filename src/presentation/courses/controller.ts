@@ -24,12 +24,25 @@ export class CoursesController{
         })
     }
     getCourseByExternalId = (req: Request, res: Response) => {
-        res.json('get course by external id')
+        this.courseRepository.getById(Number(req.params.id)).then((course) => {
+            res.json(course)
+        }).catch((error) => {
+            res.status(500).json(error)
+        })
     }
-    deleteByExternalId = (req: Request, res: Response) => {
-        res.json('delete by externl id')
+    deleteById = (req: Request, res: Response) => {
+        this.courseRepository.deleteById(Number(req.params.id)).then((response) => {
+            res.json(response)
+        }).catch((error) => {
+            res.status(500).json(error)
+        })
     }
     updateCourseByUuid = (req: Request, res: Response) => {
-        res.json('update course by uuid')
+        const [error,registerCourseDto] = RegisterCourseDto.create(req.body)
+        this.courseRepository.update(registerCourseDto!).then((course) => {
+            res.json(course)
+        }).catch((error) => {
+            res.status(500).json(error)
+        })
     }
 }

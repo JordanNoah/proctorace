@@ -29,8 +29,8 @@ export class Server {
         this.app.use(this.routes)
         await SequelizeInstitution.sync({force:false})
         await SequelizeUser.sync({force:true})
-        await SequelizeCourse.sync({force:true})
-        await SequelizeModule.sync({force:true})
+        await SequelizeCourse.sync({force:false})
+        await SequelizeModule.sync({force:false})
         await SequelizeEnrollment.sync({force:true})
         SequelizeUser.belongsTo(SequelizeInstitution,{
             foreignKey:'id',
@@ -39,6 +39,14 @@ export class Server {
         SequelizeCourse.belongsTo(SequelizeInstitution,{
             foreignKey:'id',
             as:'institution'
+        })
+        SequelizeModule.belongsTo(SequelizeInstitution,{
+            foreignKey:'id',
+            as:'institution'
+        })
+        SequelizeModule.belongsTo(SequelizeCourse,{
+            foreignKey:'id',
+            as:'course'
         })
         this.app.listen(this.port,() => {
             console.log(`Server running on PORT ${this.port}`);

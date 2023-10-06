@@ -12,9 +12,9 @@ export class CoursesRoutes {
 
         const controller = new CoursesController(courseRepository)
         router.get('/', controller.getAllCourses)
-        router.get('/:uuid', controller.getCourseByExternalId)
+        router.get('/:id', controller.getCourseByExternalId)
         router.post('/save', controller.createCourse)
-        router.delete('/:uuid', controller.deleteByExternalId)
+        router.delete('/:id', controller.deleteById)
         router.put('/', controller.updateCourseByUuid)
         return router;
     }

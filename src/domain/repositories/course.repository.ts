@@ -5,4 +5,6 @@ export abstract class CourseRepository {
     abstract register(registerCourseDto: RegisterCourseDto):Promise<CourseEntity>
     abstract getById(id:number):Promise<CourseEntity | null>
     abstract getAll():Promise<CourseEntity[]>
+    abstract deleteById(id: number): Promise<CourseEntity>
+    abstract update(registerCourseDto: RegisterCourseDto):Promise<CourseEntity | null>
 }
