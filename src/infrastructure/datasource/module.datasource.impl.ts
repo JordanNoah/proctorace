@@ -52,7 +52,7 @@ export class ModuleDatasourceImpl implements ModuleDatasource {
             return moduleWithInstitution ?? moduleDb
         } catch (error) {
             if (error instanceof CustomError) {
-                throw error;
+                throw error.message;
             }
             throw CustomError.internalSever()
         }
@@ -74,6 +74,107 @@ export class ModuleDatasourceImpl implements ModuleDatasource {
                         as:"course"
                     }
                 ]
+            })
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
+
+    async getAll(): Promise<ModuleEntity[]> {
+        try {
+            return await SequelizeModule.findAll({
+                include:[
+                    {
+                        model:SequelizeInstitution,
+                        as:"institution"
+                    },
+                    {
+                        model:SequelizeCourse,
+                        as:"course"
+                    }
+                ]
+            })
+        } catch (error) {           
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
+
+    async deleteById(id: number): Promise<ModuleEntity> {
+        try {
+            var module = await this.getById(id)
+            if(!module) throw CustomError.notFound('Module not found')
+
+            await SequelizeModule.destroy({
+                where:{
+                    id:id
+                }
+            })
+            return module
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
+    
+    async update(registerModuleDto: RegisterModuleDto): Promise<ModuleEntity | null> {
+        try {
+            const {institution,module} = registerModuleDto
+
+            if(typeof institution != 'object') throw CustomError.internalSever('Missing institution structure')
+
+            var institutionDb = await new InstitutionDatasourceImpl().getByShortnameAndModality(institution)
+            
+            if (!institutionDb) throw CustomError.notFound('Institution not found')
+
+            var courseDb = await new CourseDatasourceImpl().getByExternalIdAndInstitutionId(module.courseId,institutionDb.id)
+            if(!courseDb) throw CustomError.notFound('Course not found')
+
+            var moduleDb = await this.getByExternalidAndInstitutionId(module.id,institutionDb.id)
+            if (!moduleDb) throw CustomError.notFound("Module not found")
+            await SequelizeModule.update({
+                externalId:module.id,
+                    institutionId:institutionDb.id,
+                    courseId:courseDb.id,
+                    name:module.name,
+                    type:module.type,
+                    url:module.url,
+                    startDate:module.startDate,
+                    endDate:module.endDate
+            },{
+                where:{
+                    externalId:module.id,
+                    institutionId:institutionDb.id
+                }
+            })
+
+            return await this.getByExternalidAndInstitutionId(module.id,institutionDb.id)
+        } catch (error) {
+            console.log(error);
+            
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
+
+    async getByExternalidAndInstitutionId(externalId: number, institutionId: number): Promise<ModuleEntity | null> {
+        try {
+            if(!externalId) throw CustomError.badRequest('missing external id')
+            if(!institutionId) throw CustomError.badRequest('missing institution id')
+            return await SequelizeModule.findOne({
+                where:{
+                    externalId:externalId,
+                    institutionId:institutionId
+                }
             })
         } catch (error) {
             if (error instanceof CustomError) {

@@ -4,7 +4,7 @@ import {SequelizeInstitution} from '../infrastructure/database/models/Institutio
 import { SequelizeUser } from '../infrastructure/database/models/User';
 import { SequelizeCourse } from '../infrastructure/database/models/Course';
 import { SequelizeModule } from '../infrastructure/database/models/Module';
-import { SequelizeEnrollment } from '../infrastructure/database/models/Enrollment';
+import { SequelizeEnrolment } from '../infrastructure/database/models/Enrolment';
 
 interface Options{
     port?: number;
@@ -28,25 +28,37 @@ export class Server {
 
         this.app.use(this.routes)
         await SequelizeInstitution.sync({force:false})
-        await SequelizeUser.sync({force:true})
+        await SequelizeUser.sync({force:false})
         await SequelizeCourse.sync({force:false})
         await SequelizeModule.sync({force:false})
-        await SequelizeEnrollment.sync({force:true})
+        await SequelizeEnrolment.sync({force:false})
         SequelizeUser.belongsTo(SequelizeInstitution,{
-            foreignKey:'id',
+            foreignKey:'institutionId',
             as:"institution"
         })
         SequelizeCourse.belongsTo(SequelizeInstitution,{
-            foreignKey:'id',
+            foreignKey:'institutionId',
             as:'institution'
         })
         SequelizeModule.belongsTo(SequelizeInstitution,{
-            foreignKey:'id',
+            foreignKey:'institutionId',
             as:'institution'
         })
         SequelizeModule.belongsTo(SequelizeCourse,{
-            foreignKey:'id',
+            foreignKey:'courseId',
             as:'course'
+        })
+        SequelizeEnrolment.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:'institution'
+        })
+        SequelizeEnrolment.belongsTo(SequelizeCourse,{
+            foreignKey:'courseId',
+            as:'course'
+        })
+        SequelizeEnrolment.belongsTo(SequelizeUser,{
+            foreignKey:'userId',
+            as:'user'
         })
         this.app.listen(this.port,() => {
             console.log(`Server running on PORT ${this.port}`);

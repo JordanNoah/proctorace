@@ -23,7 +23,7 @@ export class CoursesController{
             res.status(500).json(error)
         })
     }
-    getCourseByExternalId = (req: Request, res: Response) => {
+    getCourseById = (req: Request, res: Response) => {
         this.courseRepository.getById(Number(req.params.id)).then((course) => {
             res.json(course)
         }).catch((error) => {
@@ -37,7 +37,7 @@ export class CoursesController{
             res.status(500).json(error)
         })
     }
-    updateCourseByUuid = (req: Request, res: Response) => {
+    updateCourse = (req: Request, res: Response) => {
         const [error,registerCourseDto] = RegisterCourseDto.create(req.body)
         this.courseRepository.update(registerCourseDto!).then((course) => {
             res.json(course)
