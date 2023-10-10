@@ -213,6 +213,8 @@ export class EnrolmentDatasourceImpl implements EnrolmentDatasource {
                 }
             })
         } catch (error) {
+            console.log(error);
+            
             if (error instanceof CustomError) {
                 throw error;
             }

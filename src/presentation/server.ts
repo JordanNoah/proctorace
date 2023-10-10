@@ -6,6 +6,7 @@ import { SequelizeCourse } from '../infrastructure/database/models/Course';
 import { SequelizeModule } from '../infrastructure/database/models/Module';
 import { SequelizeEnrolment } from '../infrastructure/database/models/Enrolment';
 import { SequelizeRole } from '../infrastructure/database/models/Role';
+import { SequelizeRoleAssigned } from '../infrastructure/database/models/RoleAssigned';
 
 interface Options{
     port?: number;
@@ -34,6 +35,7 @@ export class Server {
         await SequelizeModule.sync({force:false})
         await SequelizeEnrolment.sync({force:false})
         await SequelizeRole.sync({force:false})
+        await SequelizeRoleAssigned.sync({force:false})
         SequelizeUser.belongsTo(SequelizeInstitution,{
             foreignKey:'institutionId',
             as:"institution"
@@ -66,6 +68,26 @@ export class Server {
             foreignKey:'institutionId',
             as:'institution'
         })
+        SequelizeRoleAssigned.belongsTo(SequelizeRole,{
+            foreignKey:'roleId',
+            as:'role'
+        })            
+        SequelizeRoleAssigned.belongsTo(SequelizeUser,{
+            foreignKey:'userId',
+            as:'user'
+        })            
+        SequelizeRoleAssigned.belongsTo(SequelizeEnrolment,{
+            foreignKey:'enrolmentId',
+            as:'enrolment'
+        })            
+        SequelizeRoleAssigned.belongsTo(SequelizeCourse,{
+            foreignKey:'courseId',
+            as:'course'
+        })            
+        SequelizeRoleAssigned.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:'institution'
+        })                
         this.app.listen(this.port,() => {
             console.log(`Server running on PORT ${this.port}`);
         })    

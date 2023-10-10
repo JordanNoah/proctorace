@@ -16,6 +16,8 @@ export class RoleRoutes {
         router.get('/:id',controller.getById)
         router.delete('/:id',controller.deleteById)
         router.put('/',controller.updateRole)
+        router.post('/assigned',controller.assignedRole)
+        router.post('/unassigned',controller.unassignedRole)
         return router;
     }
 }

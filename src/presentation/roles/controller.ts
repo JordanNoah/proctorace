@@ -1,6 +1,8 @@
 import { Request, Response, response } from "express";
 import { RegisterRoleDto } from "../../domain/dtos/role/register-role.dto";
 import { RoleRepository } from "../../domain/repositories/role.repository";
+import { AssignedMdlDto } from "../../domain/dtos/role/assigned-mdl.dto";
+import { UnassignedMdlDto } from "../../domain/dtos/role/unassigned-mdl.dto";
 
 export class RoleController {
     constructor(
@@ -47,6 +49,28 @@ export class RoleController {
 
         this.roleRepository.update(registerRoleDto!).then((role) => {
             res.json(role)
+        }).catch((error) => {
+            res.status(500).json(error)
+        })
+    }
+
+    assignedRole = (req:Request,res:Response) => {
+        const [error,assignedMdlDto] = AssignedMdlDto.create(req.body)
+        if(error) return res.status(400).json({error})
+
+        this.roleRepository.assigned(assignedMdlDto!).then((roleAssigned) => {
+            res.json(roleAssigned)
+        }).catch((error) => {
+            res.status(500).json(error)
+        })
+    }
+
+    unassignedRole = (req:Request,res:Response) => {
+        const [error,unassignedMdlDto] = UnassignedMdlDto.create(req.body)
+        if(error) return res.status(400).json({error})
+
+        this.roleRepository.unassigned(unassignedMdlDto!).then((roleUnassigned) => {
+            res.json(roleUnassigned)
         }).catch((error) => {
             res.status(500).json(error)
         })
