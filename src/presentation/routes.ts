@@ -4,6 +4,7 @@ import { UserRoutes } from './users/routes'
 import { CoursesRoutes } from './courses/routes'
 import { ModuleRoutes } from "./modules/routes";
 import { EnrolmentRoutes } from "./enrollments/routes";
+import { RoleRoutes } from "./roles/routes";
 
 export class AppRoutes {
     static get routes(): Router {
@@ -15,6 +16,7 @@ export class AppRoutes {
         router.use('/api/modules', ModuleRoutes.routes)
         //router.use('/api/sessions')
         router.use('/api/users', UserRoutes.routes)
+        router.use('/api/roles', RoleRoutes.routes)
         return router;
     }
 }

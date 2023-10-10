@@ -5,6 +5,7 @@ import { SequelizeUser } from '../infrastructure/database/models/User';
 import { SequelizeCourse } from '../infrastructure/database/models/Course';
 import { SequelizeModule } from '../infrastructure/database/models/Module';
 import { SequelizeEnrolment } from '../infrastructure/database/models/Enrolment';
+import { SequelizeRole } from '../infrastructure/database/models/Role';
 
 interface Options{
     port?: number;
@@ -32,6 +33,7 @@ export class Server {
         await SequelizeCourse.sync({force:false})
         await SequelizeModule.sync({force:false})
         await SequelizeEnrolment.sync({force:false})
+        await SequelizeRole.sync({force:false})
         SequelizeUser.belongsTo(SequelizeInstitution,{
             foreignKey:'institutionId',
             as:"institution"
@@ -59,6 +61,10 @@ export class Server {
         SequelizeEnrolment.belongsTo(SequelizeUser,{
             foreignKey:'userId',
             as:'user'
+        })
+        SequelizeRole.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:'institution'
         })
         this.app.listen(this.port,() => {
             console.log(`Server running on PORT ${this.port}`);
