@@ -7,6 +7,7 @@ import { SequelizeModule } from '../infrastructure/database/models/Module';
 import { SequelizeEnrolment } from '../infrastructure/database/models/Enrolment';
 import { SequelizeRole } from '../infrastructure/database/models/Role';
 import { SequelizeRoleAssigned } from '../infrastructure/database/models/RoleAssigned';
+import { SyncDataCollector } from '../domain/client';
 
 interface Options{
     port?: number;
@@ -29,6 +30,73 @@ export class Server {
         this.app.use(express.json())
 
         this.app.use(this.routes)
+
+        SequelizeUser.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:"institution",
+            onDelete:'CASCADE'
+        })
+        SequelizeCourse.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:'institution',
+            onDelete:'CASCADE'
+        })
+        SequelizeModule.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:'institution',
+            onDelete:'CASCADE'
+        })
+        SequelizeModule.belongsTo(SequelizeCourse,{
+            foreignKey:'courseId',
+            as:'course',
+            onDelete:'CASCADE'
+        })
+        SequelizeEnrolment.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:'institution',
+            onDelete:'CASCADE'
+        })
+        SequelizeEnrolment.belongsTo(SequelizeCourse,{
+            foreignKey:'courseId',
+            as:'course',
+            onDelete:'CASCADE'
+        })
+        SequelizeEnrolment.belongsTo(SequelizeUser,{
+            foreignKey:'userId',
+            as:'user',
+            onDelete:'CASCADE'
+        })
+        SequelizeRole.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:'institution',
+            onDelete:'CASCADE'
+        })
+        SequelizeRoleAssigned.belongsTo(SequelizeRole,{
+            foreignKey:'roleId',
+            as:'role',
+            onDelete:'CASCADE'
+        })            
+        SequelizeRoleAssigned.belongsTo(SequelizeUser,{
+            foreignKey:'userId',
+            as:'user',
+            onDelete:'CASCADE'
+        })            
+        SequelizeRoleAssigned.belongsTo(SequelizeEnrolment,{
+            foreignKey:'enrolmentId',
+            as:'enrolment',
+            onDelete:'CASCADE'
+        })            
+        SequelizeRoleAssigned.belongsTo(SequelizeCourse,{
+            foreignKey:'courseId',
+            as:'course',
+            onDelete:'CASCADE'
+        })            
+        SequelizeRoleAssigned.belongsTo(SequelizeInstitution,{
+            foreignKey:'institutionId',
+            as:'institution',
+            onDelete:'CASCADE'
+        })                
+
         await SequelizeInstitution.sync({force:false})
         await SequelizeUser.sync({force:false})
         await SequelizeCourse.sync({force:false})
@@ -36,60 +104,17 @@ export class Server {
         await SequelizeEnrolment.sync({force:false})
         await SequelizeRole.sync({force:false})
         await SequelizeRoleAssigned.sync({force:false})
-        SequelizeUser.belongsTo(SequelizeInstitution,{
-            foreignKey:'institutionId',
-            as:"institution"
-        })
-        SequelizeCourse.belongsTo(SequelizeInstitution,{
-            foreignKey:'institutionId',
-            as:'institution'
-        })
-        SequelizeModule.belongsTo(SequelizeInstitution,{
-            foreignKey:'institutionId',
-            as:'institution'
-        })
-        SequelizeModule.belongsTo(SequelizeCourse,{
-            foreignKey:'courseId',
-            as:'course'
-        })
-        SequelizeEnrolment.belongsTo(SequelizeInstitution,{
-            foreignKey:'institutionId',
-            as:'institution'
-        })
-        SequelizeEnrolment.belongsTo(SequelizeCourse,{
-            foreignKey:'courseId',
-            as:'course'
-        })
-        SequelizeEnrolment.belongsTo(SequelizeUser,{
-            foreignKey:'userId',
-            as:'user'
-        })
-        SequelizeRole.belongsTo(SequelizeInstitution,{
-            foreignKey:'institutionId',
-            as:'institution'
-        })
-        SequelizeRoleAssigned.belongsTo(SequelizeRole,{
-            foreignKey:'roleId',
-            as:'role'
-        })            
-        SequelizeRoleAssigned.belongsTo(SequelizeUser,{
-            foreignKey:'userId',
-            as:'user'
-        })            
-        SequelizeRoleAssigned.belongsTo(SequelizeEnrolment,{
-            foreignKey:'enrolmentId',
-            as:'enrolment'
-        })            
-        SequelizeRoleAssigned.belongsTo(SequelizeCourse,{
-            foreignKey:'courseId',
-            as:'course'
-        })            
-        SequelizeRoleAssigned.belongsTo(SequelizeInstitution,{
-            foreignKey:'institutionId',
-            as:'institution'
-        })                
-        this.app.listen(this.port,() => {
+        
+
+        this.app.listen(this.port,async () => {
             console.log(`Server running on PORT ${this.port}`);
+            console.log('Starting the data collector')
+            try {
+                await new SyncDataCollector().start();
+            } catch (error) {
+                console.log(error);
+                
+            }
         })    
     }
 }
