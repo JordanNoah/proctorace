@@ -18,7 +18,6 @@ export class RegisterCourseDto {
         if(!course.id) return ['Missing external id']
         if(!course.fullname) return ['Missing fullname']
         if(!course.shortname) return ['Missing shortname']
-        if(!course.idnumber) return ['Missing idnumber']
         if(!course.startdate) return ['Missing startdate']
         if(!course.enddate) return ['Missing enddate']
 

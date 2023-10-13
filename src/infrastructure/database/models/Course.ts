@@ -8,7 +8,7 @@ interface CourseRow {
     institutionId: number,
     name: string,
     shortName: string,
-    idNumber: string,
+    idNumber?: string,
     startDate: number,
     endDate: number,
     createdAt?: Date,

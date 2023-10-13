@@ -96,25 +96,28 @@ export class Server {
             as:'institution',
             onDelete:'CASCADE'
         })                
-
-        await SequelizeInstitution.sync({force:false})
-        await SequelizeUser.sync({force:false})
-        await SequelizeCourse.sync({force:false})
-        await SequelizeModule.sync({force:false})
-        await SequelizeEnrolment.sync({force:false})
-        await SequelizeRole.sync({force:false})
-        await SequelizeRoleAssigned.sync({force:false})
         
-
-        this.app.listen(this.port,async () => {
-            console.log(`Server running on PORT ${this.port}`);
+        var collectOldData = true;
+        if(!collectOldData){
+            await SequelizeInstitution.sync({force:false})
+            await SequelizeUser.sync({force:false})
+            await SequelizeCourse.sync({force:false})
+            await SequelizeModule.sync({force:false})
+            await SequelizeEnrolment.sync({force:false})
+            await SequelizeRole.sync({force:false})
+            await SequelizeRoleAssigned.sync({force:false})
+        }else{
             console.log('Starting the data collector')
             try {
                 await new SyncDataCollector().start();
             } catch (error) {
                 console.log(error);
-                
             }
+        }
+        
+
+        this.app.listen(this.port,async () => {
+            console.log(`Server running on PORT ${this.port}`);
         })    
     }
 }

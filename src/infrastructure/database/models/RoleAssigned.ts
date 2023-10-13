@@ -11,7 +11,7 @@ interface RoleAssignedRow {
     externalId: number,
     roleId: number,
     userId: number,
-    enrolmentId?: number,
+    enrolmentId: number,
     courseId: number,
     institutionId: number,
     createdAt?: Date,
@@ -54,6 +54,14 @@ SequelizeRoleAssigned.init({
         allowNull:false,
         references:{
             model:SequelizeUser,
+            key:'id'
+        }
+    },
+    enrolmentId:{
+        type:DataTypes.INTEGER,
+        allowNull:false,
+        references:{
+            model:SequelizeEnrolment,
             key:'id'
         }
     },

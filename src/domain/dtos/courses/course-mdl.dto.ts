@@ -5,7 +5,7 @@ export class CourseMdlDto {
         public sortorder: string,
         public fullname: string,
         public shortname: string,
-        public idnumber: string,
+        public idnumber: string | undefined,
         public summary: string,
         public summaryformat: string,
         public format: string,
