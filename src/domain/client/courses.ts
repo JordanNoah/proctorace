@@ -9,60 +9,65 @@ import Axios from "./axios";
 export class CoursesClient {
     private axios: Axios;
     private institution: InstitutionEntity;
+    private courseRepository: CourseRepositoryImpl;
 
     constructor(
         institution: InstitutionEntity
     ){
         this.axios = Axios.getInstance(`${institution.website}${institution.rest_path}`)
         this.institution = institution
+        const datasource = new CourseDatasourceImpl()
+        this.courseRepository = new CourseRepositoryImpl(datasource)
     }
 
     public async sync(){
         try {
-            const datasource = new CourseDatasourceImpl()
-            const courseRepository = new CourseRepositoryImpl(datasource)
-
-            const coursesCounter = (await this.axios.post(
-                {
-                    'wsfunction':'local_collector_alert_bun_get_courses_counter',
-                    'moodlewsrestformat':'json',
-                    'wstoken':this.institution.token
-                }
-            )).data.totalcourses
-
-            for (let index = 0; index < coursesCounter; index++) {
-                const courses = (await this.axios.post(
-                    {
-                        'moodlewsrestformat':'json',
-                        'wsfunction':'local_collector_alert_bun_get_courses_data',
-                        'wstoken':this.institution.token,
-                        'page': index
-                    }
-                )).data.courses
-
-                for (let j = 0; j < courses.length; j++) {
-                    const element = courses[j];
-                    var objDto = {
-                        "institution": {
-                            "institution_abbreviation":this.institution.abbreviation,
-                            "modality":this.institution.modality
-                        },
-                        "course":element
-                    }
-
-                    const [error,registerCourseDto] = RegisterCourseDto.create(objDto)
-                    if(error) throw CustomError.internalSever(error)
-                    await courseRepository.register(registerCourseDto!)
-                }
-            }            
-        } catch (error) {
-            console.log(error);
-            
+            const coursesCounter: any = await this.getCounter()            
+            await this.getData(coursesCounter.totalusers)
+        } catch (error) {            
             if (error instanceof CustomError) {
                 throw error.message;
             }
                         
             throw CustomError.internalSever()
+        }
+    }
+
+    public async getCounter(){
+        return await this.axios.post(
+            {
+                'moodlewsrestformat':'json',
+                'wsfunction':'local_collector_alert_bun_get_users_counter',
+                'wstoken':this.institution.token
+            }
+        )
+    }
+
+    public async getData(counter: number){
+        for (let index = 0; index < counter; index++) {
+            const courses:any = await this.axios.post(
+                {
+                    'moodlewsrestformat':'json',
+                    'wsfunction':'local_collector_alert_bun_get_courses_data',
+                    'wstoken':this.institution.token,
+                    'page': index
+                }
+            )
+
+            for (let j = 0; j < courses.courses.length; j++) {
+                const element = courses.courses[j];
+                var objDto = {
+                    "institution": {
+                        "institution_abbreviation":this.institution.abbreviation,
+                        "modality":this.institution.modality
+                    },
+                    "course":element
+                }
+
+                const [error,registerCourseDto] = RegisterCourseDto.create(objDto)
+                if(error) throw CustomError.internalSever(error)
+                await this.courseRepository.register(registerCourseDto!)
+            }
         }
     }
 }

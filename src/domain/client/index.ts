@@ -5,6 +5,7 @@ import { SequelizeSeeders } from "../../infrastructure/database/seeders";
 import { sequelize } from "../../infrastructure/database/sequelize";
 import { CustomError } from "../errors/custom.error";
 import { CoursesClient } from "./courses";
+import { EnrolmentClient } from "./enrolments";
 import { RolesClient } from "./roles";
 import { UsersClient } from "./users";
 
@@ -14,17 +15,16 @@ export class SyncDataCollector {
             sequelize.sync({force:true}).then( async ()=>{
                 await SequelizeSeeders.run()
                 console.log("Epiezo con la sync de la base");
-                var institutions = await new InstitutionDatasourceImpl().getAll()
+                var institutions = await new InstitutionDatasourceImpl().getAll()                
                 for (let index = 0; index < institutions.length; index++) {
                     const element = institutions[index];
                     await new UsersClient(element).syncUserMdl()
                     await new RolesClient(element).sync()
                     await new CoursesClient(element).sync()
+                    await new EnrolmentClient(element).sync()
                 }
             })
-        }catch(error){
-            console.log(error);
-            
+        }catch(error){            
             if (error instanceof CustomError) {
                 throw error.message;
             }

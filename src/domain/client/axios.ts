@@ -32,8 +32,16 @@ class Axios {
         return this.axiosInstance.get(url,config)
     }
 
-    public async post<T>(data?:object, config?:AxiosRequestConfig){
-        return this.axiosInstance.post('',data,config)
+    public async post<T>(data?: object, config?: AxiosRequestConfig): Promise<T> {
+        console.log(this.axiosInstance.getUri());
+        
+        const response = await this.axiosInstance.post('', data, config)        
+    
+        if (response && response.data) {
+            return response.data as T;
+        } else {
+            throw new Error("No data in response");  // Handle the case where there's no data
+        }
     }
 }
 
