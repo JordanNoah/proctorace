@@ -179,7 +179,7 @@ export class RoleDatasourceImpl implements RoleDatasource {
             if(!userDb) throw CustomError.notFound('User not found')
 
             var enrolmentDb = await new EnrolmentDatasourceImpl().getByExternalidInstitutionCourseUser(
-                role.contextid,
+                role.enrolmentId,
                 institutionDb.id,
                 courseDb.id,
                 userDb.id
@@ -255,7 +255,7 @@ export class RoleDatasourceImpl implements RoleDatasource {
             if(!userDb) throw CustomError.notFound('User not found')
 
             var enrolmentDb = await new EnrolmentDatasourceImpl().getByExternalidInstitutionCourseUser(
-                role.contextid,
+                role.enrolmentId,
                 institutionDb.id,
                 courseDb.id,
                 userDb.id

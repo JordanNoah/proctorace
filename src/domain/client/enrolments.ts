@@ -65,10 +65,7 @@ export class EnrolmentClient {
                 const [error,registerEnrolmentDto] = RegisterEnrolmentDto.create(objDto)
                 if(error) throw CustomError.internalSever(error)
                 await this.enrolmentRepository.register(registerEnrolmentDto!)
-            }
-
-            console.log(enrolments);
-            
+            }            
         }
     }
 }

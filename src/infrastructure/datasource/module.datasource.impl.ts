@@ -157,8 +157,6 @@ export class ModuleDatasourceImpl implements ModuleDatasource {
 
             return await this.getByExternalidAndInstitutionId(module.id,institutionDb.id)
         } catch (error) {
-            console.log(error);
-            
             if (error instanceof CustomError) {
                 throw error;
             }

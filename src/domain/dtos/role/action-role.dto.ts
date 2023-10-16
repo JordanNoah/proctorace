@@ -9,6 +9,7 @@ export class ActionRoleDto{
 		public component: string | null,
 		public itemid: number,
 		public sortorder: number,
+		public enrolmentId: number,
 		public courseid: number
     ){}
 }

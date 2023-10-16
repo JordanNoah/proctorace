@@ -32,9 +32,7 @@ class Axios {
         return this.axiosInstance.get(url,config)
     }
 
-    public async post<T>(data?: object, config?: AxiosRequestConfig): Promise<T> {
-        console.log(this.axiosInstance.getUri());
-        
+    public async post<T>(data?: object, config?: AxiosRequestConfig): Promise<T> {        
         const response = await this.axiosInstance.post('', data, config)        
     
         if (response && response.data) {

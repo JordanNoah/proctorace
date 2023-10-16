@@ -43,8 +43,6 @@ export class CourseDatasourceImpl implements CourseDatasource {
 
             return courseWithInstitution ?? courseDb
         } catch (error) {
-            console.log(error);
-            
             if (error instanceof CustomError) {
                 throw error;
             }

@@ -45,8 +45,6 @@ export class ModuleController {
         this.moduleRepository.update(registerModuleDto!).then((module) => {
             res.json(module)
         }).catch((error)=>{
-            console.log(error);
-            
             res.status(500).json(error)
         })
     }

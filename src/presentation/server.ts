@@ -8,6 +8,7 @@ import { SequelizeEnrolment } from '../infrastructure/database/models/Enrolment'
 import { SequelizeRole } from '../infrastructure/database/models/Role';
 import { SequelizeRoleAssigned } from '../infrastructure/database/models/RoleAssigned';
 import { SyncDataCollector } from '../domain/client';
+import { CustomError } from '../domain';
 
 interface Options{
     port?: number;
@@ -107,11 +108,14 @@ export class Server {
             await SequelizeRole.sync({force:false})
             await SequelizeRoleAssigned.sync({force:false})
         }else{
-            console.log('Starting the data collector')
             try {
                 await new SyncDataCollector().start();
             } catch (error) {
-                console.log(error);
+                if (error instanceof CustomError) {
+                    throw error.message;
+                }
+                            
+                throw CustomError.internalSever()
             }
         }
         
