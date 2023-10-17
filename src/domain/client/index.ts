@@ -13,18 +13,21 @@ import { UsersClient } from "./users";
 
 export class SyncDataCollector {
     public async start() {
+        var syncDb = false
         try{
             sequelize.sync({force:true}).then( async ()=>{
                 await SequelizeSeeders.run()
-                var institutions = await new InstitutionDatasourceImpl().getAll()                
-                for (let index = 0; index < institutions.length; index++) {
-                    const element = institutions[index];
-                    await new UsersClient(element).syncUserMdl()
-                    await new RolesClient(element).sync()
-                    await new CoursesClient(element).sync()
-                    await new EnrolmentClient(element).sync()
-                    await new ModuleClient(element).sync()
-                    await new RoleAssigned(element).sync()
+                if(syncDb){
+                    var institutions = await new InstitutionDatasourceImpl().getAll()                
+                    for (let index = 0; index < institutions.length; index++) {
+                        const element = institutions[index];
+                        await new UsersClient(element).syncUserMdl()
+                        await new RolesClient(element).sync()
+                        await new CoursesClient(element).sync()
+                        await new EnrolmentClient(element).sync()
+                        await new ModuleClient(element).sync()
+                        await new RoleAssigned(element).sync()
+                    }
                 }
             })
         }catch(error){            

@@ -9,6 +9,7 @@ import { SequelizeRole } from '../infrastructure/database/models/Role';
 import { SequelizeRoleAssigned } from '../infrastructure/database/models/RoleAssigned';
 import { SyncDataCollector } from '../domain/client';
 import { CustomError } from '../domain';
+import { RabbitMq } from '../infrastructure/eventBus/rabbitmq';
 
 interface Options{
     port?: number;
@@ -119,6 +120,14 @@ export class Server {
             }
         }
         
+        try {
+            await RabbitMq.connection()
+            await RabbitMq.setQueue()
+            await RabbitMq.consume()
+            
+        } catch (error) {
+            console.log(error);
+        }
 
         this.app.listen(this.port,async () => {
             console.log(`Server running on PORT ${this.port}`);
