@@ -14,8 +14,9 @@ export class CoursesRoutes {
         router.get('/', controller.getAllCourses)
         router.get('/:id', controller.getCourseById)
         router.post('/save', controller.createCourse)
-        router.delete('/:id', controller.deleteById)
+        router.delete('/id/:id', controller.deleteById)
         router.put('/', controller.updateCourse)
+        router.delete('/externalid',controller.deleteByExternalId)
         return router;
     }
 }

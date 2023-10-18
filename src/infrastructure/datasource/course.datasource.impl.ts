@@ -1,5 +1,6 @@
 import { CustomError } from "../../domain";
 import { CourseDatasource } from "../../domain/datasources/course.datasource";
+import { DeleteCourseMdlDto } from "../../domain/dtos/courses/delete-course-mdl.dto";
 import { RegisterCourseDto } from "../../domain/dtos/courses/register-course.dto";
 import { CourseEntity } from "../../domain/entities/course.entity";
 import { SequelizeCourse } from "../database/models/Course";
@@ -157,4 +158,26 @@ export class CourseDatasourceImpl implements CourseDatasource {
         }
     }
 
+    async deleteByExternalId(deleteByExternalId: DeleteCourseMdlDto): Promise<CourseEntity> {
+        try {
+            const {institution,courseid} = deleteByExternalId
+
+            if(typeof institution != 'object') throw CustomError.internalSever('Missing institution structure')
+
+            var institutionDb = await new InstitutionDatasourceImpl().getByShortnameAndModality(institution)
+            if (!institutionDb) throw CustomError.notFound('Institution not found')
+
+            var course = await this.getByExternalIdAndInstitutionId(courseid,institutionDb.id)
+            if(!course) throw CustomError.notFound('Course not found')
+
+            await this.deleteById(course.id)
+
+            return course;
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
 }

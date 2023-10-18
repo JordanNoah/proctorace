@@ -1,4 +1,5 @@
 import { CourseDatasource } from "../../domain/datasources/course.datasource";
+import { DeleteCourseMdlDto } from "../../domain/dtos/courses/delete-course-mdl.dto";
 import { RegisterCourseDto } from "../../domain/dtos/courses/register-course.dto";
 import { CourseEntity } from "../../domain/entities/course.entity";
 import { CourseRepository } from "../../domain/repositories/course.repository";
@@ -26,5 +27,9 @@ export class CourseRepositoryImpl implements CourseRepository {
     
     update(registerCourseDto: RegisterCourseDto): Promise<CourseEntity | null> {
         return this.courseDatasource.update(registerCourseDto)
+    }
+
+    deleteByExternalId(deleteByExternalId: DeleteCourseMdlDto): Promise<CourseEntity> {
+        return this.courseDatasource.deleteByExternalId(deleteByExternalId)
     }
 }

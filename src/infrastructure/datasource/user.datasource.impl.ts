@@ -2,6 +2,7 @@ import { CustomError, UserDatasource, UserEntity, RegisterUserDto } from '../../
 import { InstitutionDatasourceImpl } from './instutution.datasource.impl'
 import { SequelizeUser } from "../database/models/User"
 import { SequelizeInstitution } from '../database/models/Institution'
+import { DeleteUserMdlDto } from '../../domain/dtos/users/delete-user-mdl.dto'
 
 export class UserDatasourceImpl implements UserDatasource {
     async register(registerUserDto: RegisterUserDto): Promise<UserEntity> {
@@ -145,4 +146,60 @@ export class UserDatasourceImpl implements UserDatasource {
             throw CustomError.internalSever()
         }
     }
+
+    async deleteByExternalId(deleteUserMdlDto: DeleteUserMdlDto): Promise<UserEntity> {
+        try {
+            const {institution,userid} = deleteUserMdlDto
+
+            if(typeof institution != 'object') throw CustomError.internalSever('Missing institution structure')
+
+            var institutionDb = await new InstitutionDatasourceImpl().getByShortnameAndModality(institution)
+            if (!institutionDb) throw CustomError.notFound('Institution not found')
+
+            var user = await this.getByExternalidAndInstitutionId(userid,institutionDb.id)
+
+            if (!user) throw CustomError.notFound('User not found')
+
+            await this.deleteById(user.id)
+
+            return user;
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

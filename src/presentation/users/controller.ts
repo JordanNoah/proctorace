@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { UserRepository, RegisterUserDto } from '../../domain'
+import { DeleteUserMdlDto } from "../../domain/dtos/users/delete-user-mdl.dto";
 
 export class UserController {
     constructor(
@@ -45,6 +46,17 @@ export class UserController {
         if(error) return res.status(400).json({error})
 
         this.userRepository.update(registerUserDto!).then((user) => {
+            res.json(user)
+        }).catch((error) => {
+            res.status(500).json(error)
+        })
+    }
+
+    deleteByExternalId = (req: Request, res: Response) => {
+        const [error,deleteUserMdlDto] = DeleteUserMdlDto.create(req.body)
+        if(error) return res.status(400).json({error})
+
+        this.userRepository.deleteByExternalId(deleteUserMdlDto!).then((user) => {
             res.json(user)
         }).catch((error) => {
             res.status(500).json(error)

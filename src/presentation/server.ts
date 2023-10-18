@@ -99,7 +99,7 @@ export class Server {
             onDelete:'CASCADE'
         })                
         
-        var collectOldData = true;
+        var collectOldData = false;
         if(!collectOldData){
             await SequelizeInstitution.sync({force:false})
             await SequelizeUser.sync({force:false})

@@ -1,6 +1,7 @@
-import {Request, Response, response} from 'express'
+import e, {Request, Response, response} from 'express'
 import { CourseRepository } from '../../domain/repositories/course.repository';
 import { RegisterCourseDto } from '../../domain/dtos/courses/register-course.dto';
+import { DeleteCourseMdlDto } from '../../domain/dtos/courses/delete-course-mdl.dto';
 
 export class CoursesController{
     constructor(
@@ -40,6 +41,16 @@ export class CoursesController{
     updateCourse = (req: Request, res: Response) => {
         const [error,registerCourseDto] = RegisterCourseDto.create(req.body)
         this.courseRepository.update(registerCourseDto!).then((course) => {
+            res.json(course)
+        }).catch((error) => {
+            res.status(500).json(error)
+        })
+    }
+    deleteByExternalId = (req: Request, res: Response) => {
+        const [error,deleteCourseMdlDto] = DeleteCourseMdlDto.create(req.body)
+        if (error) return res.status(400).json({error})
+
+        this.courseRepository.deleteByExternalId(deleteCourseMdlDto!).then((course) => {
             res.json(course)
         }).catch((error) => {
             res.status(500).json(error)

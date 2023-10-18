@@ -13,8 +13,9 @@ export class UserRoutes {
         router.get('/', controller.getAllUsers)
         router.post('/save', controller.createUser)
         router.get('/:id', controller.getById)
-        router.delete('/:id',controller.deleteById)
+        router.delete('/id/:id',controller.deleteById)
         router.put('/',controller.updateUser)
+        router.delete('/externalid', controller.deleteByExternalId)
         return router;
     }
 }

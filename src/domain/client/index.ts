@@ -13,7 +13,7 @@ import { UsersClient } from "./users";
 
 export class SyncDataCollector {
     public async start() {
-        var syncDb = false
+        var syncDb = true
         try{
             sequelize.sync({force:true}).then( async ()=>{
                 await SequelizeSeeders.run()
