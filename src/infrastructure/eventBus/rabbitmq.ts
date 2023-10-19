@@ -55,7 +55,7 @@ export class RabbitMq{
         }else{
             console.log(message);
         }
-        this._channel.ack(msg)
+        //this._channel.ack(msg)
     }
 
     private static middleware(msg: EventDto): [string?, boolean?] {
