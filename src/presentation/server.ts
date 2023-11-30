@@ -10,6 +10,7 @@ import { SequelizeRoleAssigned } from '../infrastructure/database/models/RoleAss
 import { SyncDataCollector } from '../domain/client';
 import { CustomError } from '../domain';
 import { RabbitMq } from '../infrastructure/eventBus/rabbitmq';
+import { SequelizeSeeders } from '../infrastructure/database/seeders';
 
 interface Options{
     port?: number;
@@ -108,6 +109,7 @@ export class Server {
             await SequelizeEnrolment.sync({force:false})
             await SequelizeRole.sync({force:false})
             await SequelizeRoleAssigned.sync({force:false})
+            await SequelizeSeeders.run()
         }else{
             try {
                 await new SyncDataCollector().start();

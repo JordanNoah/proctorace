@@ -1,4 +1,5 @@
 import { EnrolmentDatasource } from "../../domain/datasources/enrolment.datasource";
+import { DeleteEnrolmentMdlDto } from "../../domain/dtos/enrolment/delete-enrolment.dto";
 import { RegisterEnrolmentDto } from "../../domain/dtos/enrolment/register-enrolment.dto";
 import { EnrolmentEntity } from "../../domain/entities/enrolment.entity";
 import { EnrolmentRepository } from "../../domain/repositories/enrolment.repository";
@@ -30,5 +31,8 @@ export class EnrolmentRepositoryImpl implements EnrolmentRepository{
             courseId,
             userId
         )
+    }
+    deleteByExternalId(deleteEnrolmentMdlDto: DeleteEnrolmentMdlDto): Promise<EnrolmentEntity> {
+        return this.enrolmentDatasource.deleteByExternalId(deleteEnrolmentMdlDto)
     }
 }

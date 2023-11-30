@@ -22,4 +22,7 @@ export class ModuleRepositoryImpl implements ModuleRepository{
     update(registerModuleDto: RegisterModuleDto): Promise<ModuleEntity | null> {
         return this.moduleDatasource.update(registerModuleDto)
     }
+    deleteByModuleDto(registerModuleDto: RegisterModuleDto): Promise<ModuleEntity | null> {
+        return this.moduleDatasource.deleteByModuleDto(registerModuleDto)
+    }
 }

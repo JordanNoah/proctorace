@@ -1,5 +1,6 @@
 import { CustomError } from "../../domain";
 import { EnrolmentDatasource } from "../../domain/datasources/enrolment.datasource";
+import { DeleteEnrolmentMdlDto } from "../../domain/dtos/enrolment/delete-enrolment.dto";
 import { RegisterEnrolmentDto } from "../../domain/dtos/enrolment/register-enrolment.dto";
 import { EnrolmentEntity } from "../../domain/entities/enrolment.entity";
 import { SequelizeCourse } from "../database/models/Course";
@@ -156,6 +157,8 @@ export class EnrolmentDatasourceImpl implements EnrolmentDatasource {
             if(!courseDb) throw CustomError.notFound('Course not found')
 
             var userDb = await new UserDatasourceImpl().getByExternalidAndInstitutionId(enrolment.userid,institutionDb.id)
+            console.log(userDb);
+            
             if(!userDb) throw CustomError.notFound('User not found')
 
             var enrolmentDb = await this.getByExternalidInstitutionCourseUser(
@@ -218,5 +221,50 @@ export class EnrolmentDatasourceImpl implements EnrolmentDatasource {
             }
             throw CustomError.internalSever()
         }
+    }
+
+    async deleteByExternalId(deleteEnrolmentMdlDto: DeleteEnrolmentMdlDto): Promise<EnrolmentEntity> {
+        try{
+            const {institution,courseId,enrolmentId} = deleteEnrolmentMdlDto
+console.log("course id",courseId);
+
+            if(typeof institution != 'object') throw CustomError.internalSever('Missing institution structure')
+
+            var institutionDb = await new InstitutionDatasourceImpl().getByShortnameAndModality(institution)
+            if (!institutionDb) throw CustomError.notFound('Institution not found')
+
+            var course = await new CourseDatasourceImpl().getByExternalIdAndInstitutionId(courseId,institutionDb.id)
+            if(!course) throw CustomError.notFound('Course not found')
+
+            var enrolment = await this.getByParams(enrolmentId,institutionDb.id,course.id)
+            if(!enrolment) throw CustomError.notFound('Enrolment not foundsssss')
+
+            await this.deleteById(enrolment.id)
+
+            return enrolment
+        }catch(error){
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
+
+    async getByParams(externalId?: number | undefined, 
+        institutionId?: number | undefined, 
+        courseId?: number | undefined, 
+        userId?: number | undefined): Promise<EnrolmentEntity | null> {
+
+            const enrolment = await SequelizeEnrolment.findOne({
+                where:{
+                    externalId,
+                    institutionId,
+                    courseId
+                },
+                logging:true
+            })
+            console.log(enrolment);
+            
+            return enrolment
     }
 }

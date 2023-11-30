@@ -7,4 +7,5 @@ export abstract class ModuleRepository {
     abstract getAll():Promise<ModuleEntity[]>
     abstract deleteById(id:Number):Promise<ModuleEntity>
     abstract update(registerModuleDto: RegisterModuleDto):Promise<ModuleEntity | null>
+    abstract deleteByModuleDto(registerModuleDto: RegisterModuleDto): Promise<ModuleEntity | null>
 }

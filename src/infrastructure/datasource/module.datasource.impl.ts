@@ -181,4 +181,16 @@ export class ModuleDatasourceImpl implements ModuleDatasource {
             throw CustomError.internalSever()
         }
     }
+
+    async deleteByModuleDto(registerModuleDto: RegisterModuleDto): Promise<ModuleEntity | null> {
+        try {
+            console.log(registerModuleDto);
+            throw new Error("Method not implemented.");
+        } catch (error) {
+            if (error instanceof CustomError) {
+                throw error;
+            }
+            throw CustomError.internalSever()
+        }
+    }
 }

@@ -8,4 +8,5 @@ export abstract class ModuleDatasource {
     abstract deleteById(id:number): Promise<ModuleEntity>
     abstract update(registerModuleDto: RegisterModuleDto): Promise<ModuleEntity | null>
     abstract getByExternalidAndInstitutionId(externalId:number,institutionId:number):Promise<ModuleEntity | null>
+    abstract deleteByModuleDto(registerModuleDto: RegisterModuleDto): Promise<ModuleEntity | null>
 }

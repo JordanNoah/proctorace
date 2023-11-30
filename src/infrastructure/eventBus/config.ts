@@ -19,9 +19,11 @@ export const eventList: Map<string, (payload:any) => Promise<void>> = new Map([
     ['teaching-action.bun-collector.user_created', async (payload:any) => Processor.createUser(payload)],
     ['teaching-action.bun-collector.user_updated', async(payload:any) => Processor.updateUser(payload)],
     ['teaching-action.bun-collector.user_deleted',async(payload:any) => Processor.deleteUser(payload)],
+
     ['teaching-action.bun-collector.course_created',async(payload:any) => Processor.createCourse(payload)],
     ['teaching-action.bun-collector.course_updated',async(payload:any) => Processor.updateCourse(payload)],
     ['teaching-action.bun-collector.course_deleted',async(payload:any) => Processor.deleteCourse(payload)],
+    
     ['teaching-action.bun-collector.enrolment_created',async(payload:any) => Processor.createEnrolment(payload)],
     ['teaching-action.bun-collector.enrolment_updated',async(payload:any) => Processor.updateEnrolment(payload)],
     ['teaching-action.bun-collector.enrolment_deleted',async(payload:any) => Processor.deleteEnrolment(payload)],

@@ -1,10 +1,17 @@
 import { RegisterUserDto, UserRepository } from "../../domain";
 import { DeleteCourseMdlDto } from "../../domain/dtos/courses/delete-course-mdl.dto";
 import { RegisterCourseDto } from "../../domain/dtos/courses/register-course.dto";
+import { DeleteEnrolmentMdlDto } from "../../domain/dtos/enrolment/delete-enrolment.dto";
+import { RegisterEnrolmentDto } from "../../domain/dtos/enrolment/register-enrolment.dto";
+import { RegisterModuleDto } from "../../domain/dtos/modules/register-module.dto";
 import { DeleteUserMdlDto } from "../../domain/dtos/users/delete-user-mdl.dto";
 import { CourseDatasourceImpl } from "../datasource/course.datasource.impl";
+import { EnrolmentDatasourceImpl } from "../datasource/enrolment.datasource.impl";
+import { ModuleDatasourceImpl } from "../datasource/module.datasource.impl";
 import { UserDatasourceImpl } from "../datasource/user.datasource.impl";
 import { CourseRepositoryImpl } from "../repositories/course.repository.impl";
+import { EnrolmentRepositoryImpl } from "../repositories/enrolment.repository.impl";
+import { ModuleRepositoryImpl } from "../repositories/module.repository.impl";
 import { UserRepositoryImpl } from "../repositories/user.repository.impl";
 
 export class Processor {
@@ -94,13 +101,94 @@ export class Processor {
         })
     }
 
-    public static createEnrolment(content:object){}
-    public static updateEnrolment(content:object){}
-    public static deleteEnrolment(content:object){}
+    public static createEnrolment(content:object){
+        const datasource = new EnrolmentDatasourceImpl()
+        const enrolmentRepository = new EnrolmentRepositoryImpl(datasource)
 
-    public static createModule(content:object){}
-    public static updateModule(content:object){}
-    public static deleteModule(content:object){}
+        const [error,registerEnrolmentDto] = RegisterEnrolmentDto.create(content)
+        if(error) console.error(error)
+        
+        enrolmentRepository.register(registerEnrolmentDto!).then((enrolment) => {
+            console.log(`Enrolment has been createde: ${enrolment.externalId}`);
+        }).catch((error) => {
+            console.error(error.message);
+            console.error(registerEnrolmentDto);
+        })
+    }
+
+    public static updateEnrolment(content:object){
+        const datasource = new EnrolmentDatasourceImpl()
+        const enrolmentRepository = new EnrolmentRepositoryImpl(datasource)
+
+        const [error,registerEnrolmentDto] = RegisterEnrolmentDto.create(content)
+        if(error) console.error(error)
+
+        console.log(registerEnrolmentDto);
+        
+
+        enrolmentRepository.update(registerEnrolmentDto!).then((enrolment) => {
+            console.log(`Enrolment has been update: ${enrolment?.id}`);
+        }).catch((error) => {
+            console.error(error.message);
+            console.error(registerEnrolmentDto);
+        })
+    } 
+    public static deleteEnrolment(content:object){
+        const datasource = new EnrolmentDatasourceImpl()
+        const enrolmentRepository = new EnrolmentRepositoryImpl(datasource)
+
+        const [error, deleteEnrolmentMdlDto] = DeleteEnrolmentMdlDto.create(content)
+
+        if (error) console.error(error)
+
+        enrolmentRepository.deleteByExternalId(deleteEnrolmentMdlDto!).then((enrolment) => {
+            console.log(`Enrolment has been deleted: ${enrolment}`);
+        }).catch((error) => {
+            console.error(error.message);
+            console.error(deleteEnrolmentMdlDto);
+        })
+    }
+
+    public static createModule(content:object){
+        const datasource = new ModuleDatasourceImpl()
+        const moduleRepository = new ModuleRepositoryImpl(datasource)
+        const [error,registerModuleDto] = RegisterModuleDto.create(content)
+
+        if (error) console.error(error)
+
+        moduleRepository.register(registerModuleDto!).then((module) => {
+            console.log(`Module has been created: ${module}`);
+        }).catch((error) =>{
+            console.error(error.message);
+        })
+    }
+
+    public static updateModule(content:object){
+        const datasource = new ModuleDatasourceImpl()
+        const moduleRepository = new ModuleRepositoryImpl(datasource)
+        const [error,registerModuleDto] = RegisterModuleDto.create(content)
+
+        if(error) console.error(error);
+        
+        moduleRepository.update(registerModuleDto!).then((module) => {
+            console.log(`Module has been updated: ${module}`);
+        }).catch((error) => {
+            console.error(error.message);
+        })
+    }
+    public static deleteModule(content:object){
+        const datasource = new ModuleDatasourceImpl()
+        const moduleRepository = new ModuleRepositoryImpl(datasource)
+        const [error,registerModuleDto] = RegisterModuleDto.create(content)
+
+        if(error) console.error(error);
+
+        moduleRepository.deleteByModuleDto(registerModuleDto!).then((module) => {
+            console.log(`Module has been deleted: ${module}`);
+        }).catch((error) => {
+            console.error(error.message);
+        })
+    }
 
     public static roleAssigned(content:object){}
 
